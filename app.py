@@ -22,10 +22,14 @@ app.config['UPLOAD_FOLDER'] = tempfile.gettempdir()
 # ============================================
 # ⚙️ 配置区域 - API Key
 # ============================================
-# 从环境变量读取 API Key（安全做法：不在代码中硬编码）
-API_KEY = os.environ.get('GOOGLE_API_KEY')
+# 从环境变量读取 API Key
+API_KEY = os.environ.get('GOOGLE_API_KEY', '')
+
+# 如果没有设置 API Key，应用仍然可以启动，但翻译功能会在使用时提示错误
 if not API_KEY:
-    raise ValueError("❌ 错误：未设置 GOOGLE_API_KEY 环境变量！请在 Railway 的 Variables 中添加。")
+    print("⚠️ 警告：未设置 GOOGLE_API_KEY 环境变量！")
+    print("   请在 Railway 的 Variables 中添加 GOOGLE_API_KEY")
+    print("   应用将继续运行，但翻译功能将不可用。")
 # ============================================
 
 # 支持的语言（表头顺序）
@@ -66,6 +70,8 @@ SOURCE_LANGUAGE_MAP = {
 
 def setup_gemini():
     """配置 Gemini API"""
+    if not API_KEY:
+        raise ValueError("API Key 未配置！请联系管理员设置 GOOGLE_API_KEY 环境变量。")
     genai.configure(api_key=API_KEY)
     model = genai.GenerativeModel('gemini-3-flash-preview')
     return model
@@ -232,10 +238,18 @@ def translate():
 
         # 配置 Gemini
         print(f"🔧 配置 Gemini API...")
-        print(f"   API Key 长度: {len(API_KEY)}")
-        print(f"   API Key 前缀: {API_KEY[:20]}...")
-        model = setup_gemini()
-        print(f"✅ Gemini 配置完成")
+        if API_KEY:
+            print(f"   API Key 长度: {len(API_KEY)}")
+            print(f"   API Key 前缀: {API_KEY[:20]}...")
+        else:
+            print(f"   ❌ API Key 为空！")
+
+        try:
+            model = setup_gemini()
+            print(f"✅ Gemini 配置完成")
+        except ValueError as e:
+            os.remove(temp_input_path)
+            return jsonify({'error': f'API 配置错误: {str(e)}'}), 500
 
         # 执行翻译
         results = []
