@@ -22,8 +22,10 @@ app.config['UPLOAD_FOLDER'] = tempfile.gettempdir()
 # ============================================
 # ⚙️ 配置区域 - API Key
 # ============================================
-# 从环境变量读取 API Key（更安全）
-API_KEY = os.environ.get('GOOGLE_API_KEY', 'AIzaSyCp5TKySowNOh20kOZ4ge5N4S6QSjANa0s')
+# 从环境变量读取 API Key（安全做法：不在代码中硬编码）
+API_KEY = os.environ.get('GOOGLE_API_KEY')
+if not API_KEY:
+    raise ValueError("❌ 错误：未设置 GOOGLE_API_KEY 环境变量！请在 Railway 的 Variables 中添加。")
 # ============================================
 
 # 支持的语言（表头顺序）
