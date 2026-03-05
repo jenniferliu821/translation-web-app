@@ -1,0 +1,229 @@
+🎯 为 jenniferliu821 准备的完整部署指南
+================================================
+
+你的 GitHub 用户名：jenniferliu821
+仓库名称：translation-web-app
+
+================================================
+📋 完整部署步骤
+================================================
+
+第 1 步：创建 GitHub 仓库
+-----------------------
+1. 访问：https://github.com/new
+
+2. 填写信息：
+   - Repository name: translation-web-app
+   - Description（可选）: 多语言翻译 Web 应用 - 支持 11 种语言的在线翻译工具
+   - 选择 Public 或 Private
+   - ⚠️ 不要勾选 "Add a README file"
+   - ⚠️ 不要勾选 "Add .gitignore"
+   - ⚠️ 不要选择 "Choose a license"
+
+3. 点击 "Create repository"
+
+4. ✅ 创建完成！仓库地址：
+   https://github.com/jenniferliu821/translation-web-app
+
+
+第 2 步：推送代码到 GitHub
+--------------------------
+方法 1：使用脚本（推荐）✨
+--------------------------
+在终端运行：
+
+cd "/Users/jennifer/Desktop/Cursor/多语言翻译"
+./push_to_github.sh
+
+脚本会自动：
+✅ 添加远程仓库
+✅ 切换到 main 分支
+✅ 推送所有代码
+
+
+方法 2：手动执行命令
+--------------------
+cd "/Users/jennifer/Desktop/Cursor/多语言翻译"
+
+git remote add origin https://github.com/jenniferliu821/translation-web-app.git
+git branch -M main
+git push -u origin main
+
+
+⚠️ 如果提示需要身份验证：
+--------------------------
+GitHub 现在需要使用 Personal Access Token (PAT)
+
+1. 创建 Token：
+   访问：https://github.com/settings/tokens
+   - 点击 "Generate new token" → "Generate new token (classic)"
+   - Note: "Translation App Deployment"
+   - Expiration: 90 days（或选择其他）
+   - 勾选 "repo" 权限
+   - 点击 "Generate token"
+   - ⚠️ 复制生成的 token（只显示一次！）
+
+2. 使用 Token 推送：
+   当 git push 提示输入密码时，粘贴你的 token（不是 GitHub 密码）
+
+
+第 3 步：部署到 Railway
+-----------------------
+1. 访问 Railway：
+   https://railway.app
+
+2. 登录：
+   点击 "Login with GitHub"
+   使用你的 GitHub 账号登录（jenniferliu821）
+
+3. 创建新项目：
+   - 点击 "New Project"
+   - 选择 "Deploy from GitHub repo"
+   - 在列表中找到并选择：
+     jenniferliu821/translation-web-app
+
+4. 等待自动部署：
+   Railway 会自动检测到 Python 项目并开始部署
+   在 Deployments 标签可以看到进度
+
+5. 配置环境变量：⚠️ 重要！
+   - 点击你的服务（service）
+   - 点击 "Variables" 标签
+   - 点击 "New Variable"
+   - 添加：
+     Variable name:  GOOGLE_API_KEY
+     Variable value: AIzaSyCp5TKySowNOh20kOZ4ge5N4S6QSjANa0s
+   - 点击 "Add"
+   - Railway 会自动重新部署
+
+6. 生成公开域名：
+   - 点击 "Settings" 标签
+   - 滚动到 "Domains" 部分
+   - 点击 "Generate Domain"
+   - Railway 会生成类似这样的域名：
+     https://translation-web-app-production-xxxx.up.railway.app
+
+7. 等待部署完成：
+   - 回到 "Deployments" 标签
+   - 等待状态变为 ✅ "Success"
+
+8. 🎉 完成！
+   - 点击生成的域名访问你的应用
+   - 测试上传 CSV 文件和翻译功能
+
+
+================================================
+🔗 重要链接汇总
+================================================
+
+1. 创建 GitHub 仓库：
+   https://github.com/new
+
+2. 你的仓库地址（创建后）：
+   https://github.com/jenniferliu821/translation-web-app
+
+3. Railway 部署：
+   https://railway.app
+
+4. GitHub Personal Access Token：
+   https://github.com/settings/tokens
+
+
+================================================
+✅ 部署检查清单
+================================================
+
+第 1 步：GitHub
+  ☐ 访问 https://github.com/new
+  ☐ 创建 translation-web-app 仓库
+  ☐ 不要添加 README、.gitignore、License
+  ☐ 点击 Create repository
+
+第 2 步：推送代码
+  ☐ 运行：./push_to_github.sh
+  ☐ 或手动执行 git 命令
+  ☐ 如需要，创建 Personal Access Token
+  ☐ 推送成功
+
+第 3 步：Railway 部署
+  ☐ 访问 https://railway.app
+  ☐ 用 GitHub 登录
+  ☐ New Project → Deploy from GitHub repo
+  ☐ 选择 jenniferliu821/translation-web-app
+  ☐ 等待自动部署
+  ☐ 添加环境变量 GOOGLE_API_KEY
+  ☐ 生成公开域名
+  ☐ 等待部署成功
+  ☐ 访问域名测试
+
+第 4 步：分享给同事
+  ☐ 复制 Railway 生成的域名
+  ☐ 发送给需要使用的同事
+  ☐ 同事可以直接访问使用
+
+
+================================================
+💡 使用提示
+================================================
+
+✅ 部署后的优势：
+  - 24/7 在线，随时可用
+  - 全球任何地方都能访问
+  - 不需要你的电脑一直开着
+  - 自动 HTTPS 加密
+  - 推送代码自动更新
+
+📱 访问方式：
+  - 电脑浏览器
+  - 手机浏览器
+  - 平板浏览器
+  - 任何有网络的设备
+
+🔄 更新应用：
+  以后如果修改代码，只需：
+  cd "/Users/jennifer/Desktop/Cursor/多语言翻译"
+  git add .
+  git commit -m "更新说明"
+  git push
+
+  Railway 会自动重新部署！
+
+💰 费用：
+  Railway 免费额度：每月 $5
+  - 约 500 小时运行时间
+  - 100GB 出站流量
+  - 对这个应用完全够用
+  - 如果超出，会提示绑定信用卡
+
+
+================================================
+🆘 常见问题
+================================================
+
+Q: 推送时提示 "remote: Repository not found"
+A: 仓库还没创建，先去 GitHub 创建仓库
+
+Q: 推送时提示需要用户名密码
+A: 输入用户名后，密码处粘贴 Personal Access Token
+
+Q: Railway 部署失败
+A: 检查 Build Logs，通常是依赖安装问题
+
+Q: 应用能访问但翻译失败
+A: 检查是否添加了 GOOGLE_API_KEY 环境变量
+
+Q: 想要自定义域名
+A: Railway 支持绑定自己的域名，在 Settings → Domains 设置
+
+
+================================================
+🎊 准备就绪！
+================================================
+
+所有准备工作已完成，现在开始部署吧！
+
+1. ⏩ 快速开始：运行 ./push_to_github.sh
+2. 📖 详细步骤：按照上面的指南操作
+3. ✋ 需要帮助：随时问我！
+
+祝部署顺利！🚀
