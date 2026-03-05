@@ -65,7 +65,7 @@ SOURCE_LANGUAGE_MAP = {
 def setup_gemini():
     """配置 Gemini API"""
     genai.configure(api_key=API_KEY)
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    model = genai.GenerativeModel('gemini-3-flash-preview')
     return model
 
 
@@ -102,10 +102,12 @@ Translate now:"""
 
     for attempt in range(max_retries):
         try:
+            print(f"🔄 尝试翻译 (第 {attempt + 1}/{max_retries} 次): {text[:50]}...")
             response = model.generate_content(prompt)
 
             # 检查响应是否有效
             if not response.candidates:
+                print(f"⚠️  没有候选响应，重试...")
                 time.sleep(2)
                 continue
 
@@ -113,10 +115,12 @@ Translate now:"""
 
             # 检查是否有内容
             if not candidate.content or not candidate.content.parts:
+                print(f"⚠️  候选项无内容，重试...")
                 time.sleep(2)
                 continue
 
             response_text = candidate.content.parts[0].text.strip()
+            print(f"✅ 收到响应: {response_text[:100]}...")
 
             # 清理可能的 markdown 代码块
             if response_text.startswith('```'):
@@ -125,23 +129,28 @@ Translate now:"""
 
             # 解析 JSON
             translations = json.loads(response_text)
+            print(f"✅ JSON 解析成功，翻译了 {len(translations)} 种语言")
 
             # 添加源语言原文
             translations[source_lang_code] = text
 
             return translations
 
-        except json.JSONDecodeError:
+        except json.JSONDecodeError as e:
+            print(f"❌ JSON 解析错误: {e}")
+            print(f"   响应内容: {response_text[:200] if 'response_text' in locals() else 'N/A'}")
             if attempt < max_retries - 1:
                 time.sleep(2)
                 continue
             return {source_lang_code: text}
-        except Exception:
+        except Exception as e:
+            print(f"❌ 翻译错误: {type(e).__name__}: {e}")
             if attempt < max_retries - 1:
                 time.sleep(2)
                 continue
             return {source_lang_code: text}
 
+    print(f"⚠️  所有重试失败，仅返回源语言")
     return {source_lang_code: text}
 
 
@@ -220,11 +229,16 @@ def translate():
             return jsonify({'error': '文件为空或格式错误'}), 400
 
         # 配置 Gemini
+        print(f"🔧 配置 Gemini API...")
+        print(f"   API Key 长度: {len(API_KEY)}")
+        print(f"   API Key 前缀: {API_KEY[:20]}...")
         model = setup_gemini()
+        print(f"✅ Gemini 配置完成")
 
         # 执行翻译
         results = []
         total = len(input_data)
+        print(f"📋 开始处理 {total} 条翻译任务...")
 
         for i, row in enumerate(input_data, 1):
             # 获取数据
@@ -233,12 +247,15 @@ def translate():
             original_text = row.get('Original Text', '')
 
             if not original_text:
+                print(f"⚠️  第 {i} 行: 原文为空，跳过")
                 continue
 
             source_lang_code = get_source_lang_code(source_lang_text)
+            print(f"\n📝 [{i}/{total}] Key: {key_name}, 源语言: {source_lang_text} ({source_lang_code})")
 
             # 调用翻译
             translations = translate_text(model, original_text, source_lang_code)
+            print(f"   翻译结果: {list(translations.keys())}")
 
             results.append({
                 'key_name': key_name,
