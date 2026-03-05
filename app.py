@@ -65,7 +65,7 @@ SOURCE_LANGUAGE_MAP = {
 def setup_gemini():
     """配置 Gemini API"""
     genai.configure(api_key=API_KEY)
-    model = genai.GenerativeModel('gemini-3-flash-preview')
+    model = genai.GenerativeModel('gemini-1.5-flash')
     return model
 
 
